@@ -3,7 +3,8 @@ import "./App.scss";
 
 function App() {
   let [state, setState] = useState([]);
-
+  let [globalText, setGlobalText] = useState("");
+  console.log(globalText);
   const addPanel = (item, idx, saveObj, list) => {
     const save = (addText) => {
       item.addPanel = addText;
@@ -97,14 +98,22 @@ function App() {
   };
   return (
     <div className="container">
+      <input
+        type="text"
+        placeholder="Global Title"
+        value={globalText}
+        onChange={(e) => setGlobalText(e.currentTarget.value)}
+      />
       <button
         onClick={() => {
-          state.push({
-            title: `item${state.length + 1}`,
-            todoList: [],
-            addPanel: "",
-          });
+          globalText &&
+            state.push({
+              title: globalText,
+              todoList: [],
+              addPanel: "",
+            });
           setState([...state]);
+          setGlobalText("");
         }}
       >
         Add
@@ -113,22 +122,7 @@ function App() {
       {state.map((item, idx) => {
         return (
           <div className="note" key={`note${idx}`}>
-            <h1 key={`Title${idx}`}>
-              {item.title}
-
-              {/* <button
-                key={`buttonDel${idx}`}
-                onClick={() => {
-                  let localState = state.filter(
-                    (item, localIdx) => idx !== localIdx && item
-                  );
-
-                  setState(localState);
-                }}
-              >
-                Del
-              </button> */}
-            </h1>
+            <h1 key={`Title${idx}`}>{item.title}</h1>
             {addPanel(
               item,
               idx,
