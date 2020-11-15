@@ -4,14 +4,12 @@ import "./App.scss";
 function App() {
   let [state, setState] = useState([]);
   let [globalText, setGlobalText] = useState("");
-  console.log(globalText);
   const addPanel = (item, idx, saveObj, list) => {
     const save = (addText) => {
       item.addPanel = addText;
       setState([...state]);
     };
     const del = () => {
-      console.log(list, item);
       if (state[idx] === list && list === item) {
         setState(state.filter((item, localIdx) => idx !== localIdx && item));
       } else {
@@ -51,6 +49,22 @@ function App() {
     );
   };
   const rec = (list) => {
+    const up = (idx) => {
+      let test = [];
+      test.push({ ...list.todoList[idx] });
+      test.push({ ...list.todoList[idx - 1] });
+      list.todoList.splice(idx - 1, 2, ...test);
+
+      setState([...state]);
+    };
+    const down = (idx) => {
+      let test = [];
+      test.push({ ...list.todoList[idx + 1] });
+      test.push({ ...list.todoList[idx] });
+      list.todoList.splice(idx, 2, ...test);
+
+      setState([...state]);
+    };
     return (
       <ul>
         {list.todoList.map((item, localIdx) => {
@@ -58,6 +72,12 @@ function App() {
             return (
               <div key={`listBox-${localIdx}`}>
                 <li key={`list-${localIdx}`}>
+                  {localIdx !== 0 && (
+                    <button onClick={() => up(localIdx)}>Up</button>
+                  )}
+                  {localIdx !== list.todoList.length - 1 && (
+                    <button onClick={() => down(localIdx)}>Down</button>
+                  )}
                   {item.title}
                   {addPanel(
                     item,
@@ -77,6 +97,12 @@ function App() {
             return (
               <div key={`listBox-${localIdx}`}>
                 <li key={`list-${localIdx}`}>
+                  {localIdx !== 0 && (
+                    <button onClick={() => up(localIdx)}>Up</button>
+                  )}
+                  {localIdx !== list.todoList.length - 1 && (
+                    <button onClick={() => down(localIdx)}>Down</button>
+                  )}
                   {item.title}
                   {addPanel(
                     item,
