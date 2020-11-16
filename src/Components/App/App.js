@@ -123,7 +123,7 @@ function App() {
     );
   };
   return (
-    <div className="container">
+    <div className="container" key="container">
       <input
         type="text"
         placeholder="Global Title"
