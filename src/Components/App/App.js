@@ -30,7 +30,6 @@ function App() {
         />
         {
           <button
-            key={`buttonAdd${idx}`}
             onClick={() => {
               item.addPanel &&
                 item.todoList.push({
@@ -45,11 +44,7 @@ function App() {
             Add in Obj
           </button>
         }
-        {
-          <button key={`buttonItem-${idx}`} onClick={() => del()}>
-            Del Obj
-          </button>
-        }
+        {<button onClick={() => del()}>Del Obj</button>}
       </div>
     );
   };
@@ -74,21 +69,19 @@ function App() {
       <ul>
         {list.todoList.map((item, localIdx) => {
           return (
-            <div key={`listBox-${localIdx}`}>
-              <li key={`list-${localIdx}`}>
-                {item.title}
-                {moveButton(localIdx)}
-                {addPanel(item, localIdx, list)}
-                {item.todoList.length !== 0 && rec(item)}
-              </li>
-            </div>
+            <li key={`listBox-${localIdx}`}>
+              <p>{item.title}</p>
+              {moveButton(localIdx)}
+              {addPanel(item, localIdx, list)}
+              {item.todoList.length !== 0 && rec(item)}
+            </li>
           );
         })}
       </ul>
     );
   };
   return (
-    <div className="container" key="container">
+    <div className="container">
       <input
         type="text"
         placeholder="Global Title"
@@ -112,7 +105,7 @@ function App() {
       {state.map((item, idx) => {
         return (
           <div className="note" key={`note${idx}`}>
-            <h1 key={`Title${idx}`}>{item.title}</h1>
+            <h1>{item.title}</h1>
             {addPanel(item, idx, item)}
             <ul>{rec(item)}</ul>
           </div>
