@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import "./App.scss";
 
 function App() {
   let [state, setState] = useState([]);
   let [globalText, setGlobalText] = useState("");
-  const addPanel = (item, idx, saveObj, list) => {
+  const addPanel = (item, idx, list) => {
     const save = (addText) => {
       item.addPanel = addText;
       setState([...state]);
@@ -32,7 +32,12 @@ function App() {
           <button
             key={`buttonAdd${idx}`}
             onClick={() => {
-              item.addPanel && item.todoList.push(saveObj);
+              item.addPanel &&
+                item.todoList.push({
+                  title: item.addPanel,
+                  todoList: [],
+                  addPanel: "",
+                });
               save("");
               setState([...state]);
             }}
@@ -49,75 +54,35 @@ function App() {
     );
   };
   const rec = (list) => {
-    const up = (idx) => {
-      let test = [];
-      test.push({ ...list.todoList[idx] });
-      test.push({ ...list.todoList[idx - 1] });
-      list.todoList.splice(idx - 1, 2, ...test);
-
+    const moveItem = (idx) => {
+      list.todoList.splice(idx, 0, ...list.todoList.splice(idx, 2).reverse());
       setState([...state]);
     };
-    const down = (idx) => {
-      let test = [];
-      test.push({ ...list.todoList[idx + 1] });
-      test.push({ ...list.todoList[idx] });
-      list.todoList.splice(idx, 2, ...test);
-
-      setState([...state]);
+    const moveButton = (localIdx) => {
+      return (
+        <>
+          {localIdx !== 0 && (
+            <button onClick={() => moveItem(localIdx - 1)}>Up</button>
+          )}
+          {localIdx !== list.todoList.length - 1 && (
+            <button onClick={() => moveItem(localIdx)}>Down</button>
+          )}
+        </>
+      );
     };
     return (
       <ul>
         {list.todoList.map((item, localIdx) => {
-          if (item.todoList.length !== 0) {
-            return (
-              <div key={`listBox-${localIdx}`}>
-                <li key={`list-${localIdx}`}>
-                  {localIdx !== 0 && (
-                    <button onClick={() => up(localIdx)}>Up</button>
-                  )}
-                  {localIdx !== list.todoList.length - 1 && (
-                    <button onClick={() => down(localIdx)}>Down</button>
-                  )}
-                  {item.title}
-                  {addPanel(
-                    item,
-                    localIdx,
-                    {
-                      title: item.addPanel,
-                      todoList: [],
-                      addPanel: "",
-                    },
-                    list
-                  )}
-                </li>
-                {rec(item)}
-              </div>
-            );
-          } else {
-            return (
-              <div key={`listBox-${localIdx}`}>
-                <li key={`list-${localIdx}`}>
-                  {localIdx !== 0 && (
-                    <button onClick={() => up(localIdx)}>Up</button>
-                  )}
-                  {localIdx !== list.todoList.length - 1 && (
-                    <button onClick={() => down(localIdx)}>Down</button>
-                  )}
-                  {item.title}
-                  {addPanel(
-                    item,
-                    localIdx,
-                    {
-                      title: item.addPanel,
-                      todoList: [],
-                      addPanel: "",
-                    },
-                    list
-                  )}
-                </li>
-              </div>
-            );
-          }
+          return (
+            <div key={`listBox-${localIdx}`}>
+              <li key={`list-${localIdx}`}>
+                {item.title}
+                {moveButton(localIdx)}
+                {addPanel(item, localIdx, list)}
+                {item.todoList.length !== 0 && rec(item)}
+              </li>
+            </div>
+          );
         })}
       </ul>
     );
@@ -144,21 +109,11 @@ function App() {
       >
         Add
       </button>
-
       {state.map((item, idx) => {
         return (
           <div className="note" key={`note${idx}`}>
             <h1 key={`Title${idx}`}>{item.title}</h1>
-            {addPanel(
-              item,
-              idx,
-              {
-                title: item.addPanel,
-                todoList: [],
-                addPanel: "",
-              },
-              item
-            )}
+            {addPanel(item, idx, item)}
             <ul>{rec(item)}</ul>
           </div>
         );
