@@ -23,6 +23,7 @@ function App() {
     return (
       <div className="addTitle">
         <input
+          className="addTitle__input"
           value={item.addPanel}
           type="text"
           placeholder="Title"
@@ -30,6 +31,7 @@ function App() {
         />
         {
           <button
+            className="addTitle__add"
             onClick={() => {
               item.addPanel &&
                 item.todoList.push({
@@ -41,10 +43,15 @@ function App() {
               setState([...state]);
             }}
           >
-            Add in Obj
+            +
           </button>
         }
-        {<button onClick={() => del()}>Del Obj</button>}
+        {
+          <button className="addTitle__del" onClick={() => del()}>
+            {" "}
+            &#10060;
+          </button>
+        }
       </div>
     );
   };
@@ -55,14 +62,18 @@ function App() {
     };
     const moveButton = (localIdx) => {
       return (
-        <>
+        <div className="moveButton">
           {localIdx !== 0 && (
-            <button onClick={() => moveItem(localIdx - 1)}>Up</button>
+            <button className="up" onClick={() => moveItem(localIdx - 1)}>
+              &#9650;
+            </button>
           )}
           {localIdx !== list.todoList.length - 1 && (
-            <button onClick={() => moveItem(localIdx)}>Down</button>
+            <button className="down" onClick={() => moveItem(localIdx)}>
+              &#9660;
+            </button>
           )}
-        </>
+        </div>
       );
     };
     return (
@@ -70,8 +81,9 @@ function App() {
         {list.todoList.map((item, localIdx) => {
           return (
             <li key={`listBox-${localIdx}`}>
-              <p>{item.title}</p>
               {moveButton(localIdx)}
+              <span>{item.title}</span>
+
               {addPanel(item, localIdx, list)}
               {item.todoList.length !== 0 && rec(item)}
             </li>
@@ -82,35 +94,41 @@ function App() {
   };
   return (
     <div className="container">
-      <input
-        type="text"
-        placeholder="Global Title"
-        value={globalText}
-        onChange={(e) => setGlobalText(e.currentTarget.value)}
-      />
-      <button
-        onClick={() => {
-          globalText &&
-            state.push({
-              title: globalText,
-              todoList: [],
-              addPanel: "",
-            });
-          setState([...state]);
-          setGlobalText("");
-        }}
-      >
-        Add
-      </button>
-      {state.map((item, idx) => {
-        return (
-          <div className="note" key={`note${idx}`}>
-            <h1>{item.title}</h1>
-            {addPanel(item, idx, item)}
-            <ul>{rec(item)}</ul>
-          </div>
-        );
-      })}
+      <div className="container__global">
+        <input
+          type="text"
+          placeholder="Global Title"
+          value={globalText}
+          onChange={(e) => setGlobalText(e.currentTarget.value)}
+        />
+        <button
+          onClick={() => {
+            globalText &&
+              state.push({
+                title: globalText,
+                todoList: [],
+                addPanel: "",
+              });
+            setState([...state]);
+            setGlobalText("");
+          }}
+        >
+          +
+        </button>
+      </div>
+
+      <div className="container__content">
+        {state.map((item, idx) => {
+          return (
+            <div className="note" key={`note${idx}`}>
+              {addPanel(item, idx, item)}
+              <h1 className="note__title">{item.title}</h1>
+
+              <ul className="note__ul">{rec(item)}</ul>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
